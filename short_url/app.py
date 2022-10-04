@@ -1,4 +1,5 @@
 import hashlib
+import os
 import uuid
 from datetime import datetime, timedelta
 
@@ -19,7 +20,7 @@ from wtforms.validators import url as url_validator
 from short_url.database import Links, Transitions, engine
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'SECRET_KEY'
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 
 class URLForm(FlaskForm):

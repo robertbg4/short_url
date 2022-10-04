@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 
 from sqlalchemy import create_engine
@@ -6,9 +7,7 @@ from sqlalchemy.schema import Column
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.sql.sqltypes import DateTime, Integer, String
 
-engine = create_engine(
-    'postgresql://r.r.rakhmatullin:password@localhost:5432/work', echo=True, future=True
-)
+engine = create_engine(os.getenv('DATABASE_URL'), echo=True, future=True)
 
 Base = declarative_base()
 
