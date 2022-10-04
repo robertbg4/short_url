@@ -4,9 +4,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy.schema import Column
 from sqlalchemy.sql.schema import ForeignKey
-from sqlalchemy.sql.sqltypes import Integer, String, DateTime
+from sqlalchemy.sql.sqltypes import DateTime, Integer, String
 
-engine = create_engine('postgresql://r.r.rakhmatullin:password@localhost:5432/work', echo=True, future=True)
+engine = create_engine(
+    'postgresql://r.r.rakhmatullin:password@postgres:5432/work', echo=True, future=True
+)
 
 Base = declarative_base()
 
@@ -17,7 +19,9 @@ class Links(Base):
 
     code = Column(String(6), primary_key=True)
     original_url = Column(String, nullable=True)
-    transitions = relationship('Transitions', back_populates='link', cascade='all, delete-orphan')
+    transitions = relationship(
+        'Transitions', back_populates='link', cascade='all, delete-orphan'
+    )
 
 
 class Transitions(Base):

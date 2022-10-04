@@ -1,0 +1,40 @@
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: r.r.rakhmatullin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: work
+    volumes:
+      - ./db.sql:/docker-entrypoint-initdb.d/db.sql
+      - ./postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "r.r.rakhmatullin", "-d", "work"]
+      interval: 5s
+      retries: 5
+    restart: always
+
+  app:
+    env_file:
+      - .env
+    image: short_url
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    entrypoint: ["gunicorn", "app:app", "-b", "0.0.0.0:8000"]
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: python -c "import requests; requests.get('http://localhost:8000/')" || exit -1
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
